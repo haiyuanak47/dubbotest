@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://dubbo.apache.org/schema/dubbo
+       http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+       <!-- 提供方应用信息，用于计算依赖关系 -->
+       <dubbo:application name="user-provider"/>
+       <!-- 用dubbo协议在20889端口暴露服务 -->
+       <dubbo:protocol name="dubbo" port="20889" host="127.0.0.1"/>
+       <!-- 使用zookeeper注册中心暴露服务地址 -->
+       <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+       <dubbo:provider version="1.0.0" host="127.0.0.1"/>
+       <!-- 声明需要暴露的服务接口 -->
+       <dubbo:service interface="com.lhy.common.service.CustomerService" ref="customer-service-provider">
+              <!--dubbo缺省配置的(timeout)超时时间为1000ms，远程服务调用重试次数(retries)不包括第一次调用为2，在这儿单独给方法配置一下超时和重试次数-->
+              <dubbo:method name="getList" timeout="5000" retries="0"/>
+       </dubbo:service>
+       <dubbo:service interface="com.lhy.common.service.SmallQuestionBankService" ref="smallQuestionBank-service-provider">
+              <!--dubbo缺省配置的(timeout)超时时间为1000ms，远程服务调用重试次数(retries)不包括第一次调用为2，在这儿单独给方法配置一下超时和重试次数-->
+              <dubbo:method name="getList" timeout="5000" retries="0"/>
+       </dubbo:service>
+       <dubbo:service interface="com.lhy.common.service.SmallQuestionItemService" ref="smallQuestionItem-service-provider">
+              <!--dubbo缺省配置的(timeout)超时时间为1000ms，远程服务调用重试次数(retries)不包括第一次调用为2，在这儿单独给方法配置一下超时和重试次数-->
+              <dubbo:method name="getList" timeout="5000" retries="0"/>
+       </dubbo:service>
+       <bean id="customer-service-provider" class="com.lhy.provider.impl.CustomerServiceImpl"/>
+       <bean id="smallQuestionBank-service-provider" class="com.lhy.provider.impl.SmallQuestionBankServiceImpl"/>
+       <bean id="smallQuestionItem-service-provider" class="com.lhy.provider.impl.SmallQuestionItemServiceImpl"/>
+
+</beans>

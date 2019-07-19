@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://dubbo.apache.org/schema/dubbo
+       http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+    <!--dubbo:application：用于配置当前应用信息，不管该应用是提供者还是消费者-->
+    <dubbo:application name="user-consumer"/>
+   <!-- dubbo:consumer：消费方配置，check表示启动consumer是否需要检查有服务提供者，
+   loadbalance 表示负载均衡规则，leastactive表示选用最少调用的那个服务-->
+    <dubbo:consumer version="1.0.0" check="false"
+                    loadbalance="leastactive"/>
+    <!--dubbo:registry：用于配置连接注册中心相关信息-->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+    <!--dubbo:reference：用于创建一个远程服务代理，一个引用可以指向多个注册中心-->
+    <!--User-->
+    <dubbo:reference id="customer-service--customer"
+                     interface="com.lhy.common.service.CustomerService"/>
+    <dubbo:reference id="smallQuestionBank-service-customer"
+                     interface="com.lhy.common.service.SmallQuestionBankService"/>
+    <dubbo:reference id="smallQuestionItem-service-customer"
+                     interface="com.lhy.common.service.SmallQuestionItemService"/>
+</beans>
