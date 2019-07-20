@@ -22,4 +22,6 @@
                      interface="com.lhy.common.service.SmallQuestionBankService"/>
     <dubbo:reference id="smallQuestionItem-service-customer"
                      interface="com.lhy.common.service.SmallQuestionItemService"/>
+    <dubbo:reference id="smallQuestion-service-customer"
+                     interface="com.lhy.common.service.SmallQuestionService"/>
 </beans>

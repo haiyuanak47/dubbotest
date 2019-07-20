@@ -12,11 +12,11 @@ import javax.persistence.Table;
 import javax.persistence.SequenceGenerator;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-/**
+/**   
  * @Title: Entity
  * @Description: 小程序驾考题库总表
  * @author liuhaiyuan
- * @date 2019-07-19 09:46:25
+ * @date 2019-07-20 18:57:41
  * @version V1.0   
  *
  */
@@ -24,9 +24,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Table(name = "small_question_bank")
 public class SmallQuestionBank implements Serializable {
 
-    private static final long serialVersionUID = 1073369317961915676L;
+    private static final long serialVersionUID = -5284745849180113854L;
 	/***/
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name ="id")

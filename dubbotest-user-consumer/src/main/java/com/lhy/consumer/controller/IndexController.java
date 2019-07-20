@@ -3,12 +3,14 @@ package com.lhy.consumer.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.lhy.common.entity.Customer;
+import com.lhy.common.entity.SmallQuestion;
 import com.lhy.common.entity.SmallQuestionBank;
 import com.lhy.common.entity.SmallQuestionItem;
 import com.lhy.common.response.CommonResponse;
 import com.lhy.common.service.CustomerService;
 import com.lhy.common.service.SmallQuestionBankService;
 import com.lhy.common.service.SmallQuestionItemService;
+import com.lhy.common.service.SmallQuestionService;
 import com.lhy.common.utils.HttpUtils;
 import com.lhy.consumer.request.UserRequest;
 import io.swagger.annotations.Api;
@@ -38,6 +40,8 @@ public class IndexController {
     private SmallQuestionBankService smallQuestionBankService;
     @Autowired
     private SmallQuestionItemService smallQuestionItemService;
+    @Autowired
+    private SmallQuestionService smallQuestionService;
     /***
      * 查询所有用户信息
      * @return
@@ -83,6 +87,8 @@ public class IndexController {
         String imgSavePath = outPath+"\\images\\";
         String aduioSavePath = outPath+"\\aduio\\";
         List<String> list = new ArrayList<String>();
+        //是否下载文件
+        boolean isDownFile = false;
         //科目一
         list.add("{ \"type\": \"1\", \"types\": \"11\", \"title\": \"精选题一\"}");//精选题一
         list.add("{ \"type\": \"1\", \"types\": \"12\", \"title\": \"精选题二\"}");//精选题二
@@ -151,9 +157,9 @@ public class IndexController {
                 }
                 //continue;
             }else{
-                try{
+                /*try{
                     Thread.sleep(3*1000);
-                }catch (InterruptedException e){}
+                }catch (InterruptedException e){}*/
                 mSmallQuestionBank = new SmallQuestionBank();
                 mSmallQuestionBank.setCreateAt(System.currentTimeMillis());
                 mSmallQuestionBank.setUpdateAt(System.currentTimeMillis());
@@ -170,6 +176,7 @@ public class IndexController {
                 JSONObject dataJSONObject = (JSONObject)JSONObject.parse(dataStr);
                 JSONArray dataJSONArray = dataJSONObject.getJSONArray("datas");
                 for(Object mObject:dataJSONArray){
+                    //小程序驾考题库项目关联表
                     SmallQuestionItem mSmallQuestionItem = JSONObject.parseObject(mObject.toString(), SmallQuestionItem.class);
                     mSmallQuestionItem.setCreateAt(System.currentTimeMillis());
                     mSmallQuestionItem.setUpdateAt(System.currentTimeMillis());
@@ -177,44 +184,63 @@ public class IndexController {
                     mSmallQuestionItem.setMd5( DigestUtils.md5Hex(mObject.toString()));
                     mSmallQuestionItem.setBankId(bankId);
                     mSmallQuestionItem.setTypes(Integer.parseInt(types));
+                    mSmallQuestionItem.setType(Integer.parseInt(type));
+                    smallQuestionItemService.save(mSmallQuestionItem);
+                    //查询是否存在此pid 题库
+                    List<SmallQuestion> questionList = smallQuestionService.getListByPid(mSmallQuestionItem.getPid());
+                    if(questionList.size()>0){
+                        continue;
+                    }
+                    //小程序驾考考题明细表
+                    SmallQuestion mSmallQuestion = JSONObject.parseObject(mObject.toString(), SmallQuestion.class);
+                    mSmallQuestion.setCreateAt(System.currentTimeMillis());
+                    mSmallQuestion.setUpdateAt(System.currentTimeMillis());
+                    mSmallQuestion.setServiceId(0L);
 
-                    if(StringUtils.isNotEmpty(mSmallQuestionItem.getAudio())){
-                        String fileName = mSmallQuestionItem.getAudio().substring(mSmallQuestionItem.getAudio().lastIndexOf('/')+1);
-                        //下载mp3
-                        String downFileUrl = imgUrl + mSmallQuestionItem.getAudio();
-                        log.info("down:"+downFileUrl);
-                        boolean downRe = HttpUtils.downLoadFile(downFileUrl,aduioSavePath+fileName);
-                        if(!downRe){
-                            downFailedNum++;
-                            downFailedUrl += ","+downFileUrl;
+                    if(StringUtils.isNotEmpty(mSmallQuestion.getAudio())){
+                        String fileName = mSmallQuestion.getAudio().substring(mSmallQuestion.getAudio().lastIndexOf('/')+1);
+                        if(isDownFile){
+                            //下载mp3
+                            String downFileUrl = imgUrl + mSmallQuestion.getAudio();
+                            log.info("down:"+downFileUrl);
+                            boolean downRe = HttpUtils.downLoadFile(downFileUrl,aduioSavePath+fileName);
+                            if(!downRe){
+                                downFailedNum++;
+                                downFailedUrl += ","+downFileUrl;
+                            }
                         }
-                        mSmallQuestionItem.setAudio("/r/questionbank/aduio/"+fileName);
+                        mSmallQuestion.setAudio("/r/questionbank/aduio/"+fileName);
                     }
                     //下载讲解gif
-                    if(StringUtils.isNotEmpty(mSmallQuestionItem.getExplanationgif())){
-                        String fileName = mSmallQuestionItem.getExplanationgif().substring(mSmallQuestionItem.getExplanationgif().lastIndexOf('/')+1);
-                        String downFileUrl = imgUrl + mSmallQuestionItem.getExplanationgif();
-                        log.info("down:"+downFileUrl);
-                        boolean downRe = HttpUtils.downLoadFile(downFileUrl,imgSavePath+fileName);
-                        if(!downRe){
-                            downFailedNum++;
-                            downFailedUrl += ","+downFileUrl;
+                    if(StringUtils.isNotEmpty(mSmallQuestion.getExplanationgif())){
+                        String fileName = mSmallQuestion.getExplanationgif().substring(mSmallQuestion.getExplanationgif().lastIndexOf('/')+1);
+                        if(isDownFile){
+                            String downFileUrl = imgUrl + mSmallQuestion.getExplanationgif();
+                            log.info("down:"+downFileUrl);
+                            boolean downRe = HttpUtils.downLoadFile(downFileUrl,imgSavePath+fileName);
+                            if(!downRe){
+                                downFailedNum++;
+                                downFailedUrl += ","+downFileUrl;
+                            }
                         }
-                        mSmallQuestionItem.setExplanationgif("/r/questionbank/images/"+fileName);
+                        mSmallQuestion.setExplanationgif("/r/questionbank/images/"+fileName);
                     }
                     //下载题目中图片
-                    if(StringUtils.isNotEmpty(mSmallQuestionItem.getContentImg())){
-                        String fileName = mSmallQuestionItem.getContentImg().substring(mSmallQuestionItem.getContentImg().lastIndexOf('/')+1);
-                        String downFileUrl = imgUrl + mSmallQuestionItem.getContentImg();
-                        log.info("down:"+downFileUrl);
-                        boolean downRe = HttpUtils.downLoadFile(downFileUrl,imgSavePath+fileName);
-                        if(!downRe){
-                            downFailedNum++;
-                            downFailedUrl += ","+downFileUrl;
+                    if(StringUtils.isNotEmpty(mSmallQuestion.getContentImg())){
+                        String fileName = mSmallQuestion.getContentImg().substring(mSmallQuestion.getContentImg().lastIndexOf('/')+1);
+                        if(isDownFile){
+                            String downFileUrl = imgUrl + mSmallQuestion.getContentImg();
+                            log.info("down:"+downFileUrl);
+                            boolean downRe = HttpUtils.downLoadFile(downFileUrl,imgSavePath+fileName);
+                            if(!downRe){
+                                downFailedNum++;
+                                downFailedUrl += ","+downFileUrl;
+                            }
                         }
-                        mSmallQuestionItem.setContentImg("/r/questionbank/images/"+fileName);
+                        mSmallQuestion.setContentImg("/r/questionbank/images/"+fileName);
                     }
-                    smallQuestionItemService.save(mSmallQuestionItem);
+                    //smallQuestionItemService.save(mSmallQuestionItem);
+                    smallQuestionService.save(mSmallQuestion);
                 }
                 re+= paramStr+" 新增数据！"+dataJSONArray.size()+"\n";
             }

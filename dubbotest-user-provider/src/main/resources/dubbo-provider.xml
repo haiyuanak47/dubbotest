@@ -19,15 +19,13 @@
               <dubbo:method name="getList" timeout="5000" retries="0"/>
        </dubbo:service>
        <dubbo:service interface="com.lhy.common.service.SmallQuestionBankService" ref="smallQuestionBank-service-provider">
-              <!--dubbo缺省配置的(timeout)超时时间为1000ms，远程服务调用重试次数(retries)不包括第一次调用为2，在这儿单独给方法配置一下超时和重试次数-->
-              <dubbo:method name="getList" timeout="5000" retries="0"/>
        </dubbo:service>
        <dubbo:service interface="com.lhy.common.service.SmallQuestionItemService" ref="smallQuestionItem-service-provider">
-              <!--dubbo缺省配置的(timeout)超时时间为1000ms，远程服务调用重试次数(retries)不包括第一次调用为2，在这儿单独给方法配置一下超时和重试次数-->
-              <dubbo:method name="getList" timeout="5000" retries="0"/>
+       </dubbo:service>
+       <dubbo:service interface="com.lhy.common.service.SmallQuestionService" ref="smallQuestion-service-provider">
        </dubbo:service>
        <bean id="customer-service-provider" class="com.lhy.provider.impl.CustomerServiceImpl"/>
        <bean id="smallQuestionBank-service-provider" class="com.lhy.provider.impl.SmallQuestionBankServiceImpl"/>
        <bean id="smallQuestionItem-service-provider" class="com.lhy.provider.impl.SmallQuestionItemServiceImpl"/>
-
+       <bean id="smallQuestion-service-provider" class="com.lhy.provider.impl.SmallQuestionServiceImpl"/>
 </beans>
