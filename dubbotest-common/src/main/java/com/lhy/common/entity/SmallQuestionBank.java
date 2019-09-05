@@ -61,7 +61,10 @@ public class SmallQuestionBank implements Serializable {
 	/***/
 	@Column(name ="data_version")
 	private Long dataVersion;
-	
+
+	@Column(name ="param")
+	private String param;
+
 	/**
 	 *方法: 取得Long
 	 *@return: Long  
@@ -218,6 +221,14 @@ public class SmallQuestionBank implements Serializable {
 	 */
 	public Long getDataVersion(){
 		return this.dataVersion;
+	}
+
+	public String getParam() {
+		return param;
+	}
+
+	public void setParam(String param) {
+		this.param = param;
 	}
 
 	/**

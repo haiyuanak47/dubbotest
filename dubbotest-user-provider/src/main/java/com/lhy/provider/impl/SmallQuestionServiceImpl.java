@@ -34,6 +34,12 @@ public class SmallQuestionServiceImpl implements SmallQuestionService {
     }
 
     @Override
+    public List<SmallQuestion> getList(){
+        Query query = new Query();
+        return mapper.list(query);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     public int save(SmallQuestion mSmallQuestion) {

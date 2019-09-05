@@ -47,7 +47,76 @@ public class HttpUtils {
 		}
 		return result;
 	}
-	
+
+	/**
+	 *
+	 * @param requestUrl
+	 * @param params
+	 * @param destination 写入本地目录
+	 * @return
+	 */
+	public static boolean postURL(String requestUrl,String params,String destination){
+		try
+		{
+			URL url = new URL(requestUrl);
+			HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+			httpURLConnection.setRequestMethod("POST");// 提交模式
+			// conn.setConnectTimeout(10000);//连接超时 单位毫秒
+			// conn.setReadTimeout(2000);//读取超时 单位毫秒
+			// 发送POST请求必须设置如下两行
+			httpURLConnection.setDoOutput(true);
+			httpURLConnection.setDoInput(true);
+			PrintWriter printWriter = new PrintWriter(httpURLConnection.getOutputStream());
+			if(params!=null){
+				// 获取URLConnection对象对应的输出流
+				printWriter.write(params);
+			}
+			// flush输出流的缓冲
+			//printWriter.flush();
+			printWriter.close();
+			int responseCode = httpURLConnection.getResponseCode();
+			if(responseCode == HttpURLConnection.HTTP_OK){
+				InputStream input = httpURLConnection.getInputStream();
+				int index;
+				byte[] bytes = new byte[1024];
+				FileOutputStream downloadFile = new FileOutputStream(destination);
+				while ((index = input.read(bytes)) != -1) {
+					downloadFile.write(bytes, 0, index);
+					downloadFile.flush();
+				}
+				input.close();
+				downloadFile.close();
+				return true;
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * 将InputStream写入本地文件
+	 * @param destination 写入本地目录
+	 * @param input 输入流
+	 * @throws IOException IOException
+	 */
+	public static void writeToLocal(String destination, InputStream input)
+			throws IOException {
+		int index;
+		byte[] bytes = new byte[1024];
+		FileOutputStream downloadFile = new FileOutputStream(destination);
+		while ((index = input.read(bytes)) != -1) {
+			downloadFile.write(bytes, 0, index);
+			downloadFile.flush();
+		}
+		input.close();
+		downloadFile.close();
+
+	}
+
 	public static String getURL(String requestUrl){
 		String result = null;
 		try

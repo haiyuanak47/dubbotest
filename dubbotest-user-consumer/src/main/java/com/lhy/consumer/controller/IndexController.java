@@ -13,6 +13,7 @@ import com.lhy.common.service.SmallQuestionItemService;
 import com.lhy.common.service.SmallQuestionService;
 import com.lhy.common.utils.HttpUtils;
 import com.lhy.consumer.request.UserRequest;
+import com.lhy.consumer.util.TTSUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -77,7 +78,7 @@ public class IndexController {
     }
 
     //@ApiOperation(value = "更新小程序题库")
-    @RequestMapping(value = "/smallQuestionBank", method = RequestMethod.GET)
+   /* @RequestMapping(value = "/smallQuestionBank", method = RequestMethod.GET)
     public CommonResponse updateSmallQuestionBank() {
         String url = "https://weixins.jx885.com/jxapi/JK/Get_JK_tiku";
         //http://img.jx885.com/lrjk/content/explanationgif/km1/7850.gif"
@@ -157,9 +158,9 @@ public class IndexController {
                 }
                 //continue;
             }else{
-                /*try{
+                *//*try{
                     Thread.sleep(3*1000);
-                }catch (InterruptedException e){}*/
+                }catch (InterruptedException e){}*//*
                 mSmallQuestionBank = new SmallQuestionBank();
                 mSmallQuestionBank.setCreateAt(System.currentTimeMillis());
                 mSmallQuestionBank.setUpdateAt(System.currentTimeMillis());
@@ -253,6 +254,293 @@ public class IndexController {
         }
         log.info("===========执行结束==========="+re);
         return CommonResponse.success(re);
+    }*/
+
+    //新题库（懒人理论）
+    @RequestMapping(value = "/smallQuestionBank1", method = RequestMethod.GET)
+    public CommonResponse updateSmallQuestionBankNew() {
+        String url = "https://newweixins.jx885.com/lrjk/questionBank/queryQuestions";
+        String imgUrl = "http://img.jx885.com/lrjk";
+        String outPath = "I:\\questionbank";
+        String imgSavePath = outPath+"\\images\\";
+        String aduioSavePath = outPath+"\\aduio\\";
+        List<String> list = new ArrayList<String>();
+        //是否下载文件
+        boolean isDownFile = false;
+        //小车
+        //科目一
+        list.add("{ \"subject\": \"\",\"classify\": \"11\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"精选题一\"}");//精选题一
+        list.add("{ \"subject\": \"\",\"classify\": \"12\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"精选题二\"}");//精选题二
+        list.add("{ \"subject\": \"\",\"classify\": \"13\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"精选题三\"}");//精选题三
+        list.add("{ \"subject\": \"\",\"classify\": \"21\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"精选题四\"}");//精选题四
+        list.add("{ \"subject\": \"\",\"classify\": \"71\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"精选题五\"}");//精选题五
+        list.add("{ \"subject\": \"\",\"classify\": \"41\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"精选题六\"}");//精选题六
+        list.add("{ \"subject\": \"\",\"classify\": \"51\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"交通标志\"}");//交通标志
+        list.add("{ \"subject\": \"\",\"classify\": \"61\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"指示仪表\"}");//指示仪表
+        list.add("{ \"subject\": \"\",\"classify\": \"81\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"地面标线\"}");//地面标线
+        list.add("{ \"subject\": \"\",\"classify\": \"91\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"看图讲解\"}");//看图讲解
+        list.add("{ \"subject\": \"\",\"classify\": \"100\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"其他\"}");//其他
+        //地方题库 科目一
+        list.add("{ \"subject\": \"\",\"classify\": \"914\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"上海\"}");//上海
+        list.add("{ \"subject\": \"\",\"classify\": \"915\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"四川\"}");//四川
+        list.add("{ \"subject\": \"\",\"classify\": \"913\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"济南\"}");//济南
+        list.add("{ \"subject\": \"\",\"classify\": \"912\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"福州\"}");//福州
+        //科目四
+        list.add("{ \"subject\": \"\",\"classify\": \"1\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"题目找字\"}");//题目找字
+        list.add("{ \"subject\": \"\",\"classify\": \"2\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"答案找字\"}");//答案找字
+        list.add("{ \"subject\": \"\",\"classify\": \"3\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"交通常识\"}");//交通常识
+        list.add("{ \"subject\": \"\",\"classify\": \"4\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"交通标志\"}");//交通标志
+        list.add("{ \"subject\": \"\",\"classify\": \"5\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"看图讲解\"}");//看图讲解
+        list.add("{ \"subject\": \"\",\"classify\": \"6\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"安全文明\"}");//安全文明
+        list.add("{ \"subject\": \"\",\"classify\": \"7\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"全靠记忆\"}");//全靠记忆
+        list.add("{ \"subject\": \"\",\"classify\": \"8\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"全选技巧\"}");//全选技巧
+        list.add("{ \"subject\": \"\",\"classify\": \"9\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"高速公路\"}");//高速公路
+        list.add("{ \"subject\": \"\",\"classify\": \"10\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"违法举例\"}");//违法举例
+        list.add("{ \"subject\": \"\",\"classify\": \"100\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"其他\"}");//其他
+        //地方题库 科目四
+        list.add("{ \"subject\": \"\",\"classify\": \"941\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"北京\"}");//北京
+        list.add("{ \"subject\": \"\",\"classify\": \"943\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"武汉\"}");//武汉
+        list.add("{ \"subject\": \"\",\"classify\": \"942\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"福州\"}");//福州
+        //货车
+        //科目一
+        list.add("{ \"subject\": \"\",\"classify\": \"1\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"题目找字\"}");//题目找字
+        list.add("{ \"subject\": \"\",\"classify\": \"2\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"答案找字\"}");//答案找字
+        list.add("{ \"subject\": \"\",\"classify\": \"3\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"交通常识\"}");//交通常识
+        list.add("{ \"subject\": \"\",\"classify\": \"4\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"交通标志\"}");//交通标志
+        list.add("{ \"subject\": \"\",\"classify\": \"5\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"看图讲解\"}");//看图讲解
+        list.add("{ \"subject\": \"\",\"classify\": \"6\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"安全文明\"}");//安全文明
+        list.add("{ \"subject\": \"\",\"classify\": \"7\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"全靠记忆\"}");//全靠记忆
+        list.add("{ \"subject\": \"\",\"classify\": \"8\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"全选技巧\"}");//全选技巧
+        list.add("{ \"subject\": \"\",\"classify\": \"9\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"高速公路\"}");//高速公路
+        list.add("{ \"subject\": \"\",\"classify\": \"10\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"违法举例\"}");//违法举例
+        list.add("{ \"subject\": \"\",\"classify\": \"100\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"其他\"}");//其他
+        list.add("{ \"subject\": \"\",\"classify\": \"50\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"货车专用\"}");//货车专用
+        //科目四
+        list.add("{ \"subject\": \"\",\"classify\": \"111\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"题目找字1\"}");//题目找字1
+        list.add("{ \"subject\": \"\",\"classify\": \"112\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"题目找字2\"}");//题目找字2
+        list.add("{ \"subject\": \"\",\"classify\": \"113\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"答案找字\"}");//答案找字
+        list.add("{ \"subject\": \"\",\"classify\": \"114\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"交通常识\"}");//交通常识
+        list.add("{ \"subject\": \"\",\"classify\": \"115\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"交通标志\"}");//交通标志
+        list.add("{ \"subject\": \"\",\"classify\": \"116\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"看图讲解\"}");//看图讲解
+        list.add("{ \"subject\": \"\",\"classify\": \"117\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"安全文明\"}");//安全文明
+        list.add("{ \"subject\": \"\",\"classify\": \"118\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"记忆题\"}");//记忆题
+        list.add("{ \"subject\": \"\",\"classify\": \"119\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"全选技巧\"}");//全选技巧
+        list.add("{ \"subject\": \"\",\"classify\": \"120\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"高速公路\"}");//高速公路
+        list.add("{ \"subject\": \"\",\"classify\": \"121\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"违法举例\"}");//违法举例
+        list.add("{ \"subject\": \"\",\"classify\": \"122\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"其他\"}");//其他
+
+        String re = "";
+        int downFailedNum = 0;
+        String downFailedUrl = "";
+        for(String paramStr:list){
+            log.info("执行开始:"+paramStr);
+
+            JSONObject paramJSONObject = (JSONObject)JSONObject.parse(paramStr);
+            String subject = paramJSONObject.getString("subject");
+            String classify = paramJSONObject.getString("classify");
+            String questionType = paramJSONObject.getString("questionType");
+            String carType = paramJSONObject.getString("carType");
+            String title = paramJSONObject.getString("title");
+            //通过接口查询
+            String param = "";
+            if("1".equals(questionType)){
+                param = "classify="+classify+"&carType="+carType+"&questionType="+questionType;
+            }else if("2".equals(questionType)){
+                param = "subject="+subject+"&carType="+carType+"&questionType="+questionType;
+            }
+            //JSON
+            String result = HttpUtils.postURL(url,param);
+            System.out.println("result===================:"+result);
+            JSONObject resultJSONObject = (JSONObject)JSONObject.parse(result);
+            String dataStr = resultJSONObject.getString("data");
+            String md5Str = DigestUtils.md5Hex(dataStr);
+            //SmallQuestionBank mSmallQuestionBank = new SmallQuestionBank();
+            SmallQuestionBank mSmallQuestionBank = smallQuestionBankService.getSmallQuestionBank(param);
+
+            if(mSmallQuestionBank!=null){
+                //对比数据是否更新
+                if(!mSmallQuestionBank.getMd5().equals(md5Str)){
+                    re+= paramStr+" 数据有更新！/n";
+                    mSmallQuestionBank.setUpdateAt(System.currentTimeMillis());
+                    mSmallQuestionBank.setMd5(md5Str);
+                    mSmallQuestionBank.setDatas(dataStr);
+                    mSmallQuestionBank.setDataVersion(mSmallQuestionBank.getDataVersion()+1);
+                    smallQuestionBankService.update(mSmallQuestionBank);
+                }
+                //continue;
+            }else{
+                /*try{
+                    Thread.sleep(3*1000);
+                }catch (InterruptedException e){}*/
+                mSmallQuestionBank = new SmallQuestionBank();
+                mSmallQuestionBank.setCreateAt(System.currentTimeMillis());
+                mSmallQuestionBank.setUpdateAt(System.currentTimeMillis());
+                mSmallQuestionBank.setParam(param);
+                mSmallQuestionBank.setTitle(title);
+                mSmallQuestionBank.setServiceId(0L);
+                mSmallQuestionBank.setDatas(dataStr);
+                mSmallQuestionBank.setMd5(md5Str);
+                mSmallQuestionBank.setDataVersion(0L);
+                int insterNum = smallQuestionBankService.save(mSmallQuestionBank);
+                //
+                Long bankId = smallQuestionBankService.getSmallQuestionBank(param).getId();
+                /*JSONObject dataJSONObject = (JSONObject)JSONObject.parse(dataStr);
+                JSONArray dataJSONArray = dataJSONObject.getJSONArray("datas");*/
+                JSONArray dataJSONArray =(JSONArray)JSONArray.parse(dataStr);
+                for(Object mObject:dataJSONArray){
+                    //小程序驾考题库项目关联表
+                    SmallQuestionItem mSmallQuestionItem = JSONObject.parseObject(mObject.toString(), SmallQuestionItem.class);
+                    mSmallQuestionItem.setCreateAt(System.currentTimeMillis());
+                    mSmallQuestionItem.setUpdateAt(System.currentTimeMillis());
+                    mSmallQuestionItem.setServiceId(0L);
+                    mSmallQuestionItem.setMd5( DigestUtils.md5Hex(mObject.toString()));
+                    mSmallQuestionItem.setBankId(bankId);
+                    if(StringUtils.isNotEmpty(subject)){
+                        mSmallQuestionItem.setSubject(Integer.parseInt(subject));
+                    }
+                    if(StringUtils.isNotEmpty(classify)){
+                        mSmallQuestionItem.setClassify(Integer.parseInt(classify));
+                    }
+                    smallQuestionItemService.save(mSmallQuestionItem);
+                    //查询是否存在此pid 题库
+                    List<SmallQuestion> questionList = smallQuestionService.getListByPid(mSmallQuestionItem.getPid());
+                    if(questionList.size()>0){
+                        continue;
+                    }
+                    //小程序驾考考题明细表
+                    SmallQuestion mSmallQuestion = JSONObject.parseObject(mObject.toString(), SmallQuestion.class);
+                    mSmallQuestion.setCreateAt(System.currentTimeMillis());
+                    mSmallQuestion.setUpdateAt(System.currentTimeMillis());
+                    mSmallQuestion.setServiceId(0L);
+                    if(StringUtils.isNotEmpty(mSmallQuestion.getAudio())){
+                        String fileName = mSmallQuestion.getAudio().substring(mSmallQuestion.getAudio().lastIndexOf('/')+1);
+                        if(isDownFile){
+                            //下载mp3
+                            String downFileUrl = imgUrl + mSmallQuestion.getAudio();
+                            log.info("down:"+downFileUrl);
+                            boolean downRe = HttpUtils.downLoadFile(downFileUrl,aduioSavePath+fileName);
+                            if(!downRe){
+                                downFailedNum++;
+                                downFailedUrl += ","+downFileUrl;
+                            }
+                        }
+                        mSmallQuestion.setAudio("/r/questionbank/aduio/"+fileName);
+                    }
+                    //下载讲解gif
+                    if(StringUtils.isNotEmpty(mSmallQuestion.getExplanationgif())){
+                        String fileName = mSmallQuestion.getExplanationgif().substring(mSmallQuestion.getExplanationgif().lastIndexOf('/')+1);
+                        if(isDownFile){
+                            String downFileUrl = imgUrl + mSmallQuestion.getExplanationgif();
+                            log.info("down:"+downFileUrl);
+                            boolean downRe = HttpUtils.downLoadFile(downFileUrl,imgSavePath+fileName);
+                            if(!downRe){
+                                downFailedNum++;
+                                downFailedUrl += ","+downFileUrl;
+                            }
+                        }
+                        mSmallQuestion.setExplanationgif("/r/questionbank/images/"+fileName);
+                    }
+                    //下载题目中图片
+                    if(StringUtils.isNotEmpty(mSmallQuestion.getContentImg())){
+                        String fileName = mSmallQuestion.getContentImg().substring(mSmallQuestion.getContentImg().lastIndexOf('/')+1);
+                        if(isDownFile){
+                            String downFileUrl = imgUrl + mSmallQuestion.getContentImg();
+                            log.info("down:"+downFileUrl);
+                            boolean downRe = HttpUtils.downLoadFile(downFileUrl,imgSavePath+fileName);
+                            if(!downRe){
+                                downFailedNum++;
+                                downFailedUrl += ","+downFileUrl;
+                            }
+                        }
+                        mSmallQuestion.setContentImg("/r/questionbank/images/"+fileName);
+                    }
+                    //smallQuestionItemService.save(mSmallQuestionItem);
+                    smallQuestionService.save(mSmallQuestion);
+                }
+                re+= paramStr+" 新增数据！"+dataJSONArray.size()+"\n";
+            }
+            System.out.println("result===="+result);
+            log.info("=============================");
+        }
+        re += "下载文件失败数量："+downFailedNum+",";
+        if(downFailedNum>0){
+            re += "下载文件失败URL："+downFailedUrl;
+        }
+        log.info("===========执行结束==========="+re);
+        return CommonResponse.success(re);
     }
 
+    //题库合成语音文件
+    @RequestMapping(value = "/smallQuestionTTS", method = RequestMethod.GET)
+    public CommonResponse smallQuestionTTS() {
+        StringBuilder re = new StringBuilder();
+        List<SmallQuestion> questionList = smallQuestionService.getList();
+        log.info("===========查询题库记录数==========="+questionList.size());
+        re.append("查询题库记录数:"+questionList.size());
+        int fileNum = 0;
+        int failureFileNum = 0;
+        for(SmallQuestion mSmallQuestion:questionList){
+            //题目内容
+            String content = mSmallQuestion.getContent();
+            //选项
+            String item1 = mSmallQuestion.getItem1();
+            String item2 = mSmallQuestion.getItem2();
+            String item3 = mSmallQuestion.getItem3();
+            String item4 = mSmallQuestion.getItem4();
+            //题目类型，0选择题/1判断题/2多选题
+            Integer type =  mSmallQuestion.getType();
+            if(type==0||type==2){
+                if(StringUtils.isNotEmpty(item1)){
+                    content+="选项A,"+item1+"。";
+                }
+                if(StringUtils.isNotEmpty(item2)){
+                    content+="选项B,"+item2+"。";
+                }
+                if(StringUtils.isNotEmpty(item3)){
+                    content+="选项C,"+item3+"。";
+                }
+                if(StringUtils.isNotEmpty(item4)){
+                    content+="选项D,"+item4+"。";
+                }
+            }else if(type==1){
+                content+="选项A,正确。选项B,错误。";
+            }
+            String contentAduioName = "content"+mSmallQuestion.getPid()+".mp3";
+            String explanationAduioName = "explanation"+mSmallQuestion.getPid()+".mp3";
+            String explainAduioName = "explain"+mSmallQuestion.getPid()+".mp3";
+            //技巧讲解内容
+            String explanation = mSmallQuestion.getExplanation();
+            //官方讲解内容
+            String explain = mSmallQuestion.getExplain();
+            String outPath = "I:\\questionbank\\aduio\\";
+            //合成题目内容语音
+            boolean text2audiore1 = TTSUtil.text2audio(content,outPath+contentAduioName);
+            if(!text2audiore1){
+                failureFileNum++;
+                log.error(mSmallQuestion.getId()+"===========合成题目内容语音 失败==========="+content);
+            }else{
+                fileNum++;
+            }
+            //合成技巧讲解内容语音
+            boolean text2audiore2 = TTSUtil.text2audio(explanation,outPath+explanationAduioName);
+            if(!text2audiore2){
+                failureFileNum++;
+                log.error(mSmallQuestion.getId()+"===========合成技巧讲解内容语音 失败==========="+explanation);
+            }else{
+                fileNum++;
+            }
+            //合成官方讲解内容语音
+            boolean text2audiore3 = TTSUtil.text2audio(explain,outPath+explainAduioName);
+            if(!text2audiore3){
+                failureFileNum++;
+                log.error(mSmallQuestion.getId()+"===========合成官方讲解内容语音 失败==========="+explain);
+            }else{
+                fileNum++;
+            }
+        }
+        re.append("成功合成语音文件数量:"+fileNum);
+        re.append("失败合成语音文件数量:"+failureFileNum);
+        log.info("===========执行结束==========="+re);
+        return CommonResponse.success(re);
+    }
 }

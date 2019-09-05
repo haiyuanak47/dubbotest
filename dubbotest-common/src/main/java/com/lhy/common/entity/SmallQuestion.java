@@ -115,7 +115,21 @@ public class SmallQuestion implements Serializable {
 	/***/
 	@Column(name ="explanation1")
 	private String explanation1;
-	
+
+	@Column(name ="must")
+	private Integer must;
+
+	@Column(name ="car_type")
+	private String carType;
+
+	@Column(name ="type")
+	private Integer type;
+
+	@Column(name ="content_audio")
+	private String contentAudio;
+
+	@Column(name ="explain_audio")
+	private String explainAudio;
 	/**
 	 *方法: 取得Long
 	 *@return: Long  
@@ -551,7 +565,47 @@ public class SmallQuestion implements Serializable {
 	public void setExplanation1(String explanation1){
 		this.explanation1 = explanation1;
 	}
-	
+
+	public Integer getMust() {
+		return must;
+	}
+
+	public void setMust(Integer must) {
+		this.must = must;
+	}
+
+	public String getCarType() {
+		return carType;
+	}
+
+	public void setCarType(String carType) {
+		this.carType = carType;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getContentAudio() {
+		return contentAudio;
+	}
+
+	public void setContentAudio(String contentAudio) {
+		this.contentAudio = contentAudio;
+	}
+
+	public String getExplainAudio() {
+		return explainAudio;
+	}
+
+	public void setExplainAudio(String explainAudio) {
+		this.explainAudio = explainAudio;
+	}
+
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this,ToStringStyle.MULTI_LINE_STYLE);
 	}

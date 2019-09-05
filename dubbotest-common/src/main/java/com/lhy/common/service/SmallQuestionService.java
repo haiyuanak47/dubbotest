@@ -9,6 +9,8 @@ public interface SmallQuestionService {
 
     List<SmallQuestion> getListByPid(int pid);
 
+    List<SmallQuestion> getList();
+
     int save(SmallQuestion mSmallQuestion);
 
     int update(SmallQuestion mSmallQuestion);

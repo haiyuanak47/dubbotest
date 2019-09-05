@@ -38,8 +38,8 @@ public class SmallQuestionItem implements Serializable {
 	@Column(name ="update_at")
 	private Long updateAt;
 	/**科目类型1/4*/
-	@Column(name ="type")
-	private Integer type;
+	@Column(name ="subject")
+	private Integer subject;
 	/**城市id*/
 	@Column(name ="city_id")
 	private Long cityId;
@@ -47,8 +47,8 @@ public class SmallQuestionItem implements Serializable {
 	@Column(name ="service_id")
 	private Long serviceId;
 	/**栏目类型*/
-	@Column(name ="types")
-	private Integer types;
+	@Column(name ="classify")
+	private Integer classify;
 	/***/
 	@Column(name ="md5")
 	private String md5;
@@ -104,21 +104,7 @@ public class SmallQuestionItem implements Serializable {
 	public void setUpdateAt(Long updateAt){
 		this.updateAt = updateAt;
 	}
-	/**
-	 *方法: 取得Integer
-	 *@return: Integer  科目类型1/4
-	 */
-	public Integer getType(){
-		return this.type;
-	}
 
-	/**
-	 *方法: 设置Integer
-	 *@param: Integer  科目类型1/4
-	 */
-	public void setType(Integer type){
-		this.type = type;
-	}
 	/**
 	 *方法: 取得Long
 	 *@return: Long  城市id
@@ -149,21 +135,7 @@ public class SmallQuestionItem implements Serializable {
 	public void setServiceId(Long serviceId){
 		this.serviceId = serviceId;
 	}
-	/**
-	 *方法: 取得Integer
-	 *@return: Integer  栏目类型
-	 */
-	public Integer getTypes(){
-		return this.types;
-	}
 
-	/**
-	 *方法: 设置Integer
-	 *@param: Integer  栏目类型
-	 */
-	public void setTypes(Integer types){
-		this.types = types;
-	}
 	/**
 	 *方法: 取得String
 	 *@return: String  
@@ -209,7 +181,23 @@ public class SmallQuestionItem implements Serializable {
 	public void setPid(Integer pid){
 		this.pid = pid;
 	}
-	
+
+	public Integer getSubject() {
+		return subject;
+	}
+
+	public void setSubject(Integer subject) {
+		this.subject = subject;
+	}
+
+	public Integer getClassify() {
+		return classify;
+	}
+
+	public void setClassify(Integer classify) {
+		this.classify = classify;
+	}
+
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this,ToStringStyle.MULTI_LINE_STYLE);
 	}

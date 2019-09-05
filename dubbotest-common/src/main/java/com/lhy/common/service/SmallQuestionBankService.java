@@ -10,9 +10,12 @@ public interface SmallQuestionBankService {
 
     SmallQuestionBank getSmallQuestionBank(String type, String types);
 
+    SmallQuestionBank getSmallQuestionBank(String param);
+
     int save(SmallQuestionBank mSmallQuestionBank);
 
     int update(SmallQuestionBank mSmallQuestionBank);
+
     List<SmallQuestionBank> getList();
 
 }

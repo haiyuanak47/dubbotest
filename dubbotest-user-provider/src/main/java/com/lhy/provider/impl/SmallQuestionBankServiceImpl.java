@@ -33,6 +33,13 @@ public class SmallQuestionBankServiceImpl implements SmallQuestionBankService {
     }
 
     @Override
+    public SmallQuestionBank getSmallQuestionBank(String param) {
+        Query query = new Query();
+        query.eq("param", param);
+        return mapper.getByQuery(query);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public int save(SmallQuestionBank mSmallQuestionBank) {
         return mapper.save(mSmallQuestionBank);
