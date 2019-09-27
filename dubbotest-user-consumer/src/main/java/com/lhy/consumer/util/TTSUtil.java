@@ -6,13 +6,18 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.lhy.common.utils.HttpUtils;
 import com.lhy.consumer.service.AuthService;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.mp3.MP3AudioHeader;
+import org.jaudiotagger.audio.mp3.MP3File;
+
+import java.io.File;
 
 public class TTSUtil {
 
     public static boolean text2audio(String text,String outPath){
 //        per（基础音库）	选填	度小宇=1，度小美=0，度逍遥=3，度丫丫=4
 //        per（精品音库）	选填	度博文=106，度小童=110，度小萌=111，度米朵=103，度小娇=5
-        String per = "4";
+        String per = "106";
         String accessToken = AuthService.getOpenAuth();
         String cuid = "yijiaolian";//用户唯一标识，用来计算UV值
         String ctp = "1";//客户端类型选择，web端填写固定值1
@@ -24,6 +29,14 @@ public class TTSUtil {
         String ttsUrl = "http://tsn.baidu.com/text2audio";
         String params = "lan=zh&ctp="+ctp+"&cuid="+cuid+"&tok="+accessToken+"&vol="+vol+"&per="+per+"&spd="+spd+"&pit="+pit+"&aue="+aue+"&tex=" + URL.encode(URL.encode(text));
         boolean ttsRe = HttpUtils.postURL(ttsUrl, params,outPath);
+        //判断文件是否合成失败（有些合成文件大小会有1k的bug）
+        if(ttsRe){
+            File mFile = new File(outPath);
+            if(getTrackLength(mFile)==0){
+                ttsRe = false;
+            }
+        }
+
         return ttsRe;
     }
 
@@ -49,4 +62,17 @@ public class TTSUtil {
         System.out.println(ttsRe);
     }
 
+    //音频文件长度 单位秒
+    public static int getTrackLength(File mFile){
+        try {
+            MP3File f = (MP3File) AudioFileIO.read(mFile);
+            MP3AudioHeader audioHeader = (MP3AudioHeader)f.getAudioHeader();
+            // 单位为秒
+            System.out.println("TrackLength:"+audioHeader.getTrackLength());
+            return audioHeader.getTrackLength();
+        } catch(Exception e) {
+            //e.printStackTrace();
+        }
+        return 0;
+    }
 }

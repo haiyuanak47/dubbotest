@@ -13,6 +13,7 @@ import com.lhy.common.service.SmallQuestionItemService;
 import com.lhy.common.service.SmallQuestionService;
 import com.lhy.common.utils.HttpUtils;
 import com.lhy.consumer.request.UserRequest;
+import com.lhy.consumer.util.Ks3Util;
 import com.lhy.consumer.util.TTSUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.spring.web.json.Json;
 
 import javax.ws.rs.core.MediaType;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -264,10 +267,12 @@ public class IndexController {
         String outPath = "I:\\questionbank";
         String imgSavePath = outPath+"\\images\\";
         String aduioSavePath = outPath+"\\aduio\\";
+        String dbImgUrlStr = "/r/questionbank/images/";
+        dbImgUrlStr = "https://ks3-cn-beijing.ksyun.com/yijiaolian/questionbank/images/";
         List<String> list = new ArrayList<String>();
         //是否下载文件
-        boolean isDownFile = false;
-        //小车
+        boolean isDownFile = true;
+        //【小车】
         //科目一
         list.add("{ \"subject\": \"\",\"classify\": \"11\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"精选题一\"}");//精选题一
         list.add("{ \"subject\": \"\",\"classify\": \"12\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"精选题二\"}");//精选题二
@@ -301,7 +306,7 @@ public class IndexController {
         list.add("{ \"subject\": \"\",\"classify\": \"941\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"北京\"}");//北京
         list.add("{ \"subject\": \"\",\"classify\": \"943\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"武汉\"}");//武汉
         list.add("{ \"subject\": \"\",\"classify\": \"942\", \"questionType\": \"1\", \"carType\": \"1\", \"title\": \"福州\"}");//福州
-        //货车
+        //【货车】
         //科目一
         list.add("{ \"subject\": \"\",\"classify\": \"1\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"题目找字\"}");//题目找字
         list.add("{ \"subject\": \"\",\"classify\": \"2\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"答案找字\"}");//答案找字
@@ -328,6 +333,34 @@ public class IndexController {
         list.add("{ \"subject\": \"\",\"classify\": \"120\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"高速公路\"}");//高速公路
         list.add("{ \"subject\": \"\",\"classify\": \"121\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"违法举例\"}");//违法举例
         list.add("{ \"subject\": \"\",\"classify\": \"122\", \"questionType\": \"1\", \"carType\": \"2\", \"title\": \"其他\"}");//其他
+        //【客车】
+        //科目一
+        list.add("{ \"subject\": \"\",\"classify\": \"1\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"题目找字\"}");//题目找字
+        list.add("{ \"subject\": \"\",\"classify\": \"2\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"答案找字\"}");//答案找字
+        list.add("{ \"subject\": \"\",\"classify\": \"3\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"交通常识\"}");//交通常识
+        list.add("{ \"subject\": \"\",\"classify\": \"4\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"交通标志\"}");//交通标志
+        list.add("{ \"subject\": \"\",\"classify\": \"5\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"看图讲解\"}");//看图讲解
+        list.add("{ \"subject\": \"\",\"classify\": \"6\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"安全文明\"}");//安全文明
+        list.add("{ \"subject\": \"\",\"classify\": \"7\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"全靠记忆\"}");//全靠记忆
+        list.add("{ \"subject\": \"\",\"classify\": \"8\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"全选技巧\"}");//全选技巧
+        list.add("{ \"subject\": \"\",\"classify\": \"9\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"高速公路\"}");//高速公路
+        list.add("{ \"subject\": \"\",\"classify\": \"10\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"违法举例\"}");//违法举例
+        list.add("{ \"subject\": \"\",\"classify\": \"100\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"其他\"}");//其他
+        list.add("{ \"subject\": \"\",\"classify\": \"54\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"货车专用\"}");//货车专用
+
+        //科目四
+        list.add("{ \"subject\": \"\",\"classify\": \"111\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"题目找字1\"}");//题目找字1
+        list.add("{ \"subject\": \"\",\"classify\": \"112\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"题目找字2\"}");//题目找字2
+        list.add("{ \"subject\": \"\",\"classify\": \"113\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"答案找字\"}");//答案找字
+        list.add("{ \"subject\": \"\",\"classify\": \"114\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"交通常识\"}");//交通常识
+        list.add("{ \"subject\": \"\",\"classify\": \"115\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"交通标志\"}");//交通标志
+        list.add("{ \"subject\": \"\",\"classify\": \"116\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"看图讲解\"}");//看图讲解
+        list.add("{ \"subject\": \"\",\"classify\": \"117\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"安全文明\"}");//安全文明
+        list.add("{ \"subject\": \"\",\"classify\": \"118\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"记忆题\"}");//记忆题
+        list.add("{ \"subject\": \"\",\"classify\": \"119\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"全选技巧\"}");//全选技巧
+        list.add("{ \"subject\": \"\",\"classify\": \"120\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"高速公路\"}");//高速公路
+        list.add("{ \"subject\": \"\",\"classify\": \"121\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"违法举例\"}");//违法举例
+        list.add("{ \"subject\": \"\",\"classify\": \"122\", \"questionType\": \"1\", \"carType\": \"3\", \"title\": \"其他\"}");//其他
 
         String re = "";
         int downFailedNum = 0;
@@ -412,7 +445,7 @@ public class IndexController {
                     mSmallQuestion.setCreateAt(System.currentTimeMillis());
                     mSmallQuestion.setUpdateAt(System.currentTimeMillis());
                     mSmallQuestion.setServiceId(0L);
-                    if(StringUtils.isNotEmpty(mSmallQuestion.getAudio())){
+                    /*if(StringUtils.isNotEmpty(mSmallQuestion.getAudio())){
                         String fileName = mSmallQuestion.getAudio().substring(mSmallQuestion.getAudio().lastIndexOf('/')+1);
                         if(isDownFile){
                             //下载mp3
@@ -425,7 +458,7 @@ public class IndexController {
                             }
                         }
                         mSmallQuestion.setAudio("/r/questionbank/aduio/"+fileName);
-                    }
+                    }*/
                     //下载讲解gif
                     if(StringUtils.isNotEmpty(mSmallQuestion.getExplanationgif())){
                         String fileName = mSmallQuestion.getExplanationgif().substring(mSmallQuestion.getExplanationgif().lastIndexOf('/')+1);
@@ -438,7 +471,7 @@ public class IndexController {
                                 downFailedUrl += ","+downFileUrl;
                             }
                         }
-                        mSmallQuestion.setExplanationgif("/r/questionbank/images/"+fileName);
+                        mSmallQuestion.setExplanationgif(dbImgUrlStr+fileName);
                     }
                     //下载题目中图片
                     if(StringUtils.isNotEmpty(mSmallQuestion.getContentImg())){
@@ -452,7 +485,7 @@ public class IndexController {
                                 downFailedUrl += ","+downFileUrl;
                             }
                         }
-                        mSmallQuestion.setContentImg("/r/questionbank/images/"+fileName);
+                        mSmallQuestion.setContentImg(dbImgUrlStr+fileName);
                     }
                     //smallQuestionItemService.save(mSmallQuestionItem);
                     smallQuestionService.save(mSmallQuestion);
@@ -470,6 +503,11 @@ public class IndexController {
         return CommonResponse.success(re);
     }
 
+    String outPath = "";
+    String dbAudioUrlStr = "https://ks3-cn-beijing.ksyun.com/yijiaolian/questionbank/aduio/";
+    int fileNum = 0;
+    int failureFileNum = 0;
+    final int ttsAudioRetry = 3;
     //题库合成语音文件
     @RequestMapping(value = "/smallQuestionTTS", method = RequestMethod.GET)
     public CommonResponse smallQuestionTTS() {
@@ -477,70 +515,187 @@ public class IndexController {
         List<SmallQuestion> questionList = smallQuestionService.getList();
         log.info("===========查询题库记录数==========="+questionList.size());
         re.append("查询题库记录数:"+questionList.size());
-        int fileNum = 0;
-        int failureFileNum = 0;
+        outPath = "I:\\questionbank\\aduio\\";
+        fileNum = 0;
+        failureFileNum = 0;
         for(SmallQuestion mSmallQuestion:questionList){
-            //题目内容
-            String content = mSmallQuestion.getContent();
-            //选项
-            String item1 = mSmallQuestion.getItem1();
-            String item2 = mSmallQuestion.getItem2();
-            String item3 = mSmallQuestion.getItem3();
-            String item4 = mSmallQuestion.getItem4();
-            //题目类型，0选择题/1判断题/2多选题
-            Integer type =  mSmallQuestion.getType();
-            if(type==0||type==2){
-                if(StringUtils.isNotEmpty(item1)){
-                    content+="选项A,"+item1+"。";
-                }
-                if(StringUtils.isNotEmpty(item2)){
-                    content+="选项B,"+item2+"。";
-                }
-                if(StringUtils.isNotEmpty(item3)){
-                    content+="选项C,"+item3+"。";
-                }
-                if(StringUtils.isNotEmpty(item4)){
-                    content+="选项D,"+item4+"。";
-                }
-            }else if(type==1){
-                content+="选项A,正确。选项B,错误。";
-            }
-            String contentAduioName = "content"+mSmallQuestion.getPid()+".mp3";
-            String explanationAduioName = "explanation"+mSmallQuestion.getPid()+".mp3";
-            String explainAduioName = "explain"+mSmallQuestion.getPid()+".mp3";
-            //技巧讲解内容
-            String explanation = mSmallQuestion.getExplanation();
-            //官方讲解内容
-            String explain = mSmallQuestion.getExplain();
-            String outPath = "I:\\questionbank\\aduio\\";
-            //合成题目内容语音
-            boolean text2audiore1 = TTSUtil.text2audio(content,outPath+contentAduioName);
-            if(!text2audiore1){
-                failureFileNum++;
-                log.error(mSmallQuestion.getId()+"===========合成题目内容语音 失败==========="+content);
-            }else{
-                fileNum++;
-            }
-            //合成技巧讲解内容语音
-            boolean text2audiore2 = TTSUtil.text2audio(explanation,outPath+explanationAduioName);
-            if(!text2audiore2){
-                failureFileNum++;
-                log.error(mSmallQuestion.getId()+"===========合成技巧讲解内容语音 失败==========="+explanation);
-            }else{
-                fileNum++;
-            }
-            //合成官方讲解内容语音
-            boolean text2audiore3 = TTSUtil.text2audio(explain,outPath+explainAduioName);
-            if(!text2audiore3){
-                failureFileNum++;
-                log.error(mSmallQuestion.getId()+"===========合成官方讲解内容语音 失败==========="+explain);
-            }else{
-                fileNum++;
-            }
+            createSmallQuestionTTS(mSmallQuestion,true,true,true);
+            //测试只执行一次
+            //break;
         }
         re.append("成功合成语音文件数量:"+fileNum);
-        re.append("失败合成语音文件数量:"+failureFileNum);
+        re.append("，失败合成语音文件数量:"+failureFileNum);
         log.info("===========执行结束==========="+re);
         return CommonResponse.success(re);
+    }
+
+    //查询合成失败的文件，重新题库合成语音文件
+    @RequestMapping(value = "/reBuildSmallQuestionTTS", method = RequestMethod.GET)
+    public CommonResponse reBuildSmallQuestionTTS() {
+        String searchOutPath = "I:\\questionbank\\nulladuio\\";
+        outPath = "I:\\questionbank\\newaduio\\";
+        StringBuilder re = new StringBuilder();
+        fileNum = 0;
+        failureFileNum = 0;
+        try {
+            ArrayList<String> fileList = new ArrayList<String>();
+            File files = new File(searchOutPath);
+            fileList = Ks3Util.fileList(files,0,fileList);
+            Iterator<String> it = fileList.iterator();
+            System.out.println("合成文件开始————————————————————————");
+            while (it.hasNext()) {
+                String filepath = it.next();
+                File startFile = new File(filepath);
+                String fileName = startFile.getName();
+                Integer pid = null;
+                String pidStr = "";
+                boolean createContentAduio = false;
+                boolean createExplanationAduio = false;
+                boolean createExplainAduio = false;
+                if(fileName.contains("content")){
+                    createContentAduio = true;
+                    pidStr = fileName.replaceAll("content","");
+                }else if(fileName.contains("explanation")){
+                    createExplanationAduio = true;
+                    pidStr = fileName.replaceAll("explanation","");
+                }else if(fileName.contains("explain")){
+                    createExplainAduio = true;
+                    pidStr = fileName.replaceAll("explain","");
+                }else{
+                    log.error("匹配文件名失败！！！！！！！！！！"+"fileName:"+fileName+" pidStr:"+pidStr);
+                }
+                pidStr = pidStr.replaceAll(".mp3","");
+                log.info("fileName:"+fileName+" pidStr:"+pidStr);
+                pid = Integer.parseInt(pidStr);
+                //查询是否存在此pid 题库
+                List<SmallQuestion> questionList = smallQuestionService.getListByPid(pid);
+                if(questionList.size()>0){
+                    createSmallQuestionTTS(questionList.get(0),createContentAduio,createExplanationAduio,createExplainAduio);
+                }
+                //测试只执行一次
+                //break;
+            }
+            System.out.println("合成文件结束————————————————————————");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //re.append("查询题库记录数:"+questionList.size());
+        re.append("成功合成语音文件数量:"+fileNum);
+        re.append("，失败合成语音文件数量:"+failureFileNum);
+        log.info("===========执行结束==========="+re);
+        return CommonResponse.success(re);
+    }
+
+
+    //合成语音文件更新数据库
+    private void createSmallQuestionTTS(SmallQuestion mSmallQuestion,boolean createContentAduio,boolean createExplanationAduio,boolean createExplainAduio){
+        //题目内容
+        String content = mSmallQuestion.getContent();
+        //选项
+        String item1 = mSmallQuestion.getItem1();
+        String item2 = mSmallQuestion.getItem2();
+        String item3 = mSmallQuestion.getItem3();
+        String item4 = mSmallQuestion.getItem4();
+        //题目类型，0选择题/1判断题/2多选题
+        Integer type =  mSmallQuestion.getType();
+        if(type==0||type==2){
+            if(StringUtils.isNotEmpty(item1)){
+                content+="选项A,"+item1+"。";
+            }
+            if(StringUtils.isNotEmpty(item2)){
+                content+="选项B,"+item2+"。";
+            }
+            if(StringUtils.isNotEmpty(item3)){
+                content+="选项C,"+item3+"。";
+            }
+            if(StringUtils.isNotEmpty(item4)){
+                content+="选项D,"+item4+"。";
+            }
+        }else if(type==1){
+            content+="选项A,正确。选项B,错误。";
+        }
+        String contentAduioName = "content"+mSmallQuestion.getPid()+".mp3";
+        String explanationAduioName = "explanation"+mSmallQuestion.getPid()+".mp3";
+        String explainAduioName = "explain"+mSmallQuestion.getPid()+".mp3";
+        //技巧讲解内容
+        String explanation = mSmallQuestion.getExplanation();
+        //官方讲解内容
+        String explain = mSmallQuestion.getExplain();
+        if(StringUtils.isNotEmpty(explain)){
+            explain = explain.replaceAll("<p>","");
+            explain = explain.replaceAll("</p>","");
+            explain = explain.replaceAll("<br/>","");
+        }
+
+        //合成题目内容语音
+        if(createContentAduio){
+            if(StringUtils.isNotEmpty(content)){
+                boolean text2audiore1 = TTSUtil.text2audio(content,outPath+contentAduioName);
+                int tryMaxNum = ttsAudioRetry;
+                while(!text2audiore1 && tryMaxNum>0){
+                    text2audiore1 = TTSUtil.text2audio(content,outPath+contentAduioName);
+                    tryMaxNum--;
+                }
+                if(!text2audiore1){
+                    failureFileNum++;
+                    log.error(mSmallQuestion.getId()+"===========合成题目内容语音 失败==========="+content);
+                }else{
+                    mSmallQuestion.setContentAudio(dbAudioUrlStr+contentAduioName);
+                    fileNum++;
+                }
+            }else{
+                log.error(mSmallQuestion.getId()+"===========合成题目内容语音 失败 内容为空!!!==========="+content);
+                mSmallQuestion.setContentAudio("");
+                //删除金山云端空文件
+                //Ks3Util.delObject(Ks3Util.audioK3sDir+contentAduioName);
+            }
+        }
+        //合成技巧讲解内容语音
+        if(createExplanationAduio){
+            if(StringUtils.isNotEmpty(explanation)){
+                boolean text2audiore2 = TTSUtil.text2audio(explanation,outPath+explanationAduioName);
+                int tryMaxNum = ttsAudioRetry;
+                while(!text2audiore2 && tryMaxNum>0){
+                    text2audiore2 = TTSUtil.text2audio(explanation,outPath+explanationAduioName);
+                    tryMaxNum--;
+                }
+                if(!text2audiore2){
+                    failureFileNum++;
+                    log.error(mSmallQuestion.getId()+"===========合成技巧讲解内容语音 失败 内容为空!!!==========="+explanation);
+                }else{
+                    mSmallQuestion.setAudio(dbAudioUrlStr+explanationAduioName);
+                    fileNum++;
+                }
+            }else{
+                mSmallQuestion.setAudio("");
+                //删除金山云端空文件
+                //Ks3Util.delObject(Ks3Util.audioK3sDir+explanationAduioName);
+            }
+
+        }
+        //合成官方讲解内容语音
+        if(createExplainAduio){
+            if(StringUtils.isNotEmpty(explain)){
+                boolean text2audiore3 = TTSUtil.text2audio(explain,outPath+explainAduioName);
+                int tryMaxNum = ttsAudioRetry;
+                while(!text2audiore3 && tryMaxNum>0){
+                    text2audiore3 = TTSUtil.text2audio(explain,outPath+explainAduioName);
+                    tryMaxNum--;
+                }
+                if(!text2audiore3){
+                    failureFileNum++;
+                    log.error(mSmallQuestion.getId()+"===========合成官方讲解内容语音 失败 内容为空!!!==========="+explain);
+                }else if(StringUtils.isEmpty(explain)){
+                    mSmallQuestion.setExplainAudio(dbAudioUrlStr+explainAduioName);
+                    fileNum++;
+                }
+            }else{
+                mSmallQuestion.setExplainAudio("");
+                //删除金山云端空文件
+                //Ks3Util.delObject(Ks3Util.audioK3sDir+explanationAduioName);
+            }
+
+        }
+        smallQuestionService.update(mSmallQuestion);
     }
 }
